@@ -51,13 +51,23 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
 
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.5.0
+    # build: .
+    # image: confluentinc/cp-kafka-connect:7.5.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: kafka-connect
     depends_on:
       kafka:
         condition: service_healthy
       schema-registry:
         condition: service_healthy
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8083/connectors"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 60s
     ports:
       - "8083:8083"
     environment:
@@ -76,7 +86,8 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/filestream-connectors"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"  
+   
 
 
   # --- BBDD ---
@@ -97,37 +108,6 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d #link con scripts .sql para creacion de tablas de bbdd
-
-
-  # --- APLICACIONES Y CONECTORES ---
-  # producer: 
-  #   build: .
-  #   container_name: python-producer
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-  #     schema-registry: 
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./src:/app
-  #     - ./schemas:/app/schemas
-  #   command: python /app/producer_bank.py
-
-
-  consumer:
-    build: .  # Docker buscará un Dockerfile en la raíz para instalar librerías
-    container_name: python-consumer
-    depends_on:
-      kafka:
-        condition: service_healthy
-      schema-registry: 
-        condition: service_healthy
-      postgres:
-        condition: service_healthy # El consumer espera a que el healthcheck de postgres sea correcto
-    volumes:
-      - ./src:/app
-      - ./schemas:/app/schemas
-    command: python /app/consumer_to_db.py
 
 
 # VOLUMENES
