@@ -3,3 +3,5 @@ confluent-kafka[avro,schema-registry]
 psycopg2-binary
 fastavro
 requests
+protobuf
+

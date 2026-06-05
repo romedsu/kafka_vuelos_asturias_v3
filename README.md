@@ -1,4 +1,4 @@
-# Sistema de Ingesta de Datos en Tiempo Real (Kafka + Postgres + Python (producer + consumer)) --> V2
+# Sistema de Ingesta de Datos en Tiempo Real (Kafka + Postgres + kafka_connects) --> V3
 
 ## Sistema de ingesta de datos a través de un pipeline de procesamiento de datos en streaming en tiempo real, desplegado sobre Docker a través de Apache Kafka y PostgreSQL.
 
