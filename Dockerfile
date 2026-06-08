@@ -34,4 +34,4 @@ USER root
 
 # Instalar conector HTTP desde Confluent Hub
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http:latest
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest
+# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest

@@ -7,7 +7,7 @@
 
 
 ## VER LISTA TOPICS creados
-```docker exec kafka_docker_v2-kafka-1 kafka-topics --list --bootstrap-server localhost:9092```
+```docker exec kafka kafka-topics --list --bootstrap-server localhost:9092```
 
 ## LOGS (servicio)
 ```docker logs -f [servicio] ```
@@ -45,3 +45,38 @@ healthcheck --> comprobar que cada servicio ha arrancado correctamente y devuelv
 ## comprobar plugin http
 ``` docker exec -it kafka-connect bash ```
 ``` ls /usr/share/confluent-hub-components ```
+
+--
+
+## CONECTOR confluent HTTP JSON
+```
+$json = @{
+    name = "asturias-flights-source"
+    config = @{
+        "connector.class" = "io.confluent.connect.http.HttpSourceConnector"
+        "tasks.max" = "1"
+        "url" = "https://opensky-network.org/api/states/all?lamin=43.0&lomin=-7.0&lamax=44.0&lomax=-5.0"
+        "topic.name.pattern" = "vuelos-asturias-raw"
+        "http.timer.interval" = "60000"
+        "confluent.topic.bootstrap.servers" = "kafka:9092"
+        "confluent.topic.replication.factor" = "1"
+        "value.converter" = "org.apache.kafka.connect.json.JsonConverter"
+        "value.converter.schemas.enable" = "false"
+        "http.offset.mode" = "SIMPLE_INCREMENTING"
+        "http.initial.offset" = "0"
+        "http.increment.column" = "timestamp"
+        "confluent.license" = ""
+    }
+} | ConvertTo-Json -Depth 10
+
+Invoke-RestMethod -Uri "http://localhost:8083/connectors" -Method Post -Body $json -ContentType "application/json"
+
+ ```
+## BORRAR CONECTOR
+Invoke-RestMethod -Uri "http://localhost:8083/connectors/asturias-flights-source" -Method Delete
+
+ ## LISTAS CONECTORES
+ Invoke-RestMethod -Uri "http://localhost:8083/connectors" -Method Get
+
+ # ESTADO CONECTOR
+ Invoke-RestMethod -Uri "http://localhost:8083/connectors/asturias-flights-source/status" -Method Get | ConvertTo-Json
