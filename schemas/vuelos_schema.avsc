@@ -1,0 +1,14 @@
+{
+  "name": "Vuelo",
+  "type": "record",
+  "fields": [
+    {"name": "icao24", "type": "string"},
+    {"name": "callsign", "type": ["string", "null"]},
+    {"name": "latitud", "type": ["double", "null"]},
+    {"name": "longitud", "type": ["double", "null"]},
+    {"name": "altitud", "type": ["double", "null"]},
+    {"name": "velocidad", "type": ["double", "null"]},
+    {"name": "vertical_rate", "type": ["double", "null"]},
+    {"name": "en_tierra", "type": ["boolean", "null"]}
+  ]
+}

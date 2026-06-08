@@ -1,4 +1,4 @@
-# Sistema de Ingesta de Datos en Tiempo Real (kafka_connects + Kafka + Postgres) --> V3
+# Sistema de Ingesta de Datos en Tiempo Real (API opensky + python producer + Kafka + Postgres) --> V3
 
 ## Sistema de ingesta de datos a través de un pipeline de procesamiento de datos en streaming en tiempo real, desplegado sobre Docker a través de Apache Kafka y PostgreSQL.
 

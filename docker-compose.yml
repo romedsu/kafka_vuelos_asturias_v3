@@ -117,6 +117,7 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
     build:
       context: .
       dockerfile: ./src/Dockerfile.producer
+    container_name: producer-python
     depends_on:
       kafka:
         condition: service_healthy
