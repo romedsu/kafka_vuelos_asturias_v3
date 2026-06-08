@@ -28,10 +28,27 @@
 # COPY ./src /app
 # COPY ./schemas /app/schemas
 
+
+# ---
+
+# FROM confluentinc/cp-kafka-connect:7.5.0
+
+# USER root
+
+# # Instalar conector HTTP desde Confluent Hub
+# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http:latest
+# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest
+
+
+# ---
+
 FROM confluentinc/cp-kafka-connect:7.5.0
 
 USER root
 
-# Instalar conector HTTP desde Confluent Hub
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http:latest
-# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest
+RUN mkdir -p /usr/share/java/camel-connectors
+
+# Copiamos de manera directa tu archivo assembly local
+COPY ./plugins/camel-http-kafka-connector/*.jar /usr/share/java/camel-connectors/
+
+USER appuser

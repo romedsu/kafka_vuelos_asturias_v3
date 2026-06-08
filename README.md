@@ -69,14 +69,19 @@ $json = @{
     }
 } | ConvertTo-Json -Depth 10
 
-Invoke-RestMethod -Uri "http://localhost:8083/connectors" -Method Post -Body $json -ContentType "application/json"
+Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins" -Method Post -Body $json -ContentType "application/json"
 
  ```
-## BORRAR CONECTOR
-Invoke-RestMethod -Uri "http://localhost:8083/connectors/asturias-flights-source" -Method Delete
-
  ## LISTAS CONECTORES
- Invoke-RestMethod -Uri "http://localhost:8083/connectors" -Method Get
+ Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins" -Method Get
+
+
+## BORRAR CONECTOR
+Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins/asturias-flights-source" -Method Delete
+
 
  # ESTADO CONECTOR
- Invoke-RestMethod -Uri "http://localhost:8083/connectors/asturias-flights-source/status" -Method Get | ConvertTo-Json
+ Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins/asturias-flights-source/status" -Method Get | ConvertTo-Json
+
+
+ <!-- CONECTOR VUELOS ATURIAS -->
