@@ -48,40 +48,30 @@ healthcheck --> comprobar que cada servicio ha arrancado correctamente y devuelv
 
 --
 
-## CONECTOR confluent HTTP JSON
-```
-$json = @{
-    name = "asturias-flights-source"
-    config = @{
-        "connector.class" = "io.confluent.connect.http.HttpSourceConnector"
-        "tasks.max" = "1"
-        "url" = "https://opensky-network.org/api/states/all?lamin=43.0&lomin=-7.0&lamax=44.0&lomax=-5.0"
-        "topic.name.pattern" = "vuelos-asturias-raw"
-        "http.timer.interval" = "60000"
-        "confluent.topic.bootstrap.servers" = "kafka:9092"
-        "confluent.topic.replication.factor" = "1"
-        "value.converter" = "org.apache.kafka.connect.json.JsonConverter"
-        "value.converter.schemas.enable" = "false"
-        "http.offset.mode" = "SIMPLE_INCREMENTING"
-        "http.initial.offset" = "0"
-        "http.increment.column" = "timestamp"
-        "confluent.license" = ""
-    }
-} | ConvertTo-Json -Depth 10
+# crear requiremnets.txt
+pip freeze > requirements.txt
 
-Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins" -Method Post -Body $json -ContentType "application/json"
+# instalar requirements
+pip install -r requirements.txt
 
- ```
+ python -m venv venvPython
+ .\venvPython\Scripts\activate
+
+
+
  ## LISTAS CONECTORES
- Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins" -Method Get
+Invoke-RestMethod -Uri "http://localhost:8083/connector-plugins" -Method Get
 
 
 ## BORRAR CONECTOR
-Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins/asturias-flights-source" -Method Delete
+Invoke-RestMethod -Uri "http://localhost:8083/connector-plugins/asturias-flights-source" -Method Delete
 
 
  # ESTADO CONECTOR
  Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins/asturias-flights-source/status" -Method Get | ConvertTo-Json
 
+ ## CONSUMER
+  docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic datos_api_vuelos_asturias --from-beginning
 
- <!-- CONECTOR VUELOS ATURIAS -->
+
+

@@ -1,0 +1,16 @@
+{
+  "name": "asturias-flights-source",
+  "config": {
+    "connector.class": "io.confluent.connect.http.HttpSourceConnector",
+    "tasks.max": "1",
+    "kafka.topic": "datos_api_flights",
+    "url": "http://opensky-network.org/api/states/all?lamin=43.0&lomin=-7.0&lamax=44.0&lomax=-5.0",
+    "method": "GET",
+    "timer.interval.ms": "60000",
+    "confluent.topic.bootstrap.servers": "kafka:9092",
+    "topic.name.pattern": "datos_api_flights",
+    "http.initial.offset": "0",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter"
+  }
+}
