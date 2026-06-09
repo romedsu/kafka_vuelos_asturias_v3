@@ -29,6 +29,9 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # para ksqldb-server
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
    # --- GOBIERNO Y GESTIÓN --> Gobierno de datos ---
   schema-registry:
@@ -91,6 +94,46 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
   #     # CONNECT_PLUGIN_PATH: "/usr/share/java/camel-connectors"  
   #     CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components" 
    
+
+  ksqldb-server:
+    image: confluentinc/cp-ksqldb-server:7.5.0
+    container_name: ksqldb-server
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      # kafka-connect:
+        # condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/healthcheck"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+    environment:
+      KSQL_BOOTSTRAP_SERVERS: kafka:9092 
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KSQL_KSQL_SERVICE_ID: ksql_server_ 
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    
+  ksqldb-cli:
+    image: confluentinc/cp-ksqldb-cli:7.5.0
+    container_name: ksqldb-cli
+    depends_on:
+      # kafka:
+      #   condition: service_healthy
+      # schema-registry:
+      #   condition: service_healthy
+      # kafka-connect:
+      #   condition: service_healthy
+      ksqldb-server:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    tty: true
+    
 
 
   # --- BBDD ---

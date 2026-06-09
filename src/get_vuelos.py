@@ -78,8 +78,10 @@ while True:
                 vuelo_mapeado = {
                     "icao24": str(avion[0]),
                     "callsign": str(avion[1]).strip() if avion[1] else None,
-                    "latitud": float(avion[6]) if avion[6] else None,
+                    "pais_origen": str(avion[2]) if avion[2] else None,
+                    "tiempo_posicion": int(avion[3]) if avion[2] else None,
                     "longitud": float(avion[5]) if avion[5] else None,
+                    "latitud": float(avion[6]) if avion[6] else None,
                     "altitud": float(avion[7]) if avion[7] else None,
                     "velocidad": float(avion[9]) if avion[9] else None,
                     "vertical_rate": float(avion[11]) if avion[11] else None,
@@ -92,7 +94,7 @@ while True:
             # Forzamos el envío de todo el lote de aviones acumulados
             producer.flush()
 
-            logging.info("¡Éxito! Lote de vuelos validado por Schema Registry e inyectado en Kafka.")
+            logging.info("¡Éxito! Lote de vuelos validado por Schema Registry e inyectado en Kafka")
             
         else:
             logging.warning(f"API OpenSky no disponible o límite de peticiones superado. Código HTTP: {response.status_code}")

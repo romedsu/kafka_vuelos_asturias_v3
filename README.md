@@ -1,18 +1,21 @@
 # kafka_vuelos_asturias_v3
 
-## Sistema de Ingesta de Datos en Tiempo Real (API opensky + python producer + Kafka + Postgres) --> V3
+## Sistema de Ingesta de Datos en Tiempo Real (API opensky + python producer + Kafka + ksqlDB + Postgres) --> V3
 
 ### Sistema de ingesta de datos a través de un pipeline de procesamiento de datos en streaming en tiempo real, desplegado sobre Docker a través de Apache Kafka y PostgreSQL.
 
 ## A partir de la API Opensky, se realiza ingesta de datos a traves de producer (python) , capta el evento y envío al broker de kafka para registrarlo en la BBDD de Postgre.
 
+[OpenSky](https://openskynetwork.github.io/opensky-api/rest.html)
+
+
 
 
 ## VER LISTA TOPICS creados
-```docker exec kafka kafka-topics --list --bootstrap-server localhost:9092```
+` docker exec kafka kafka-topics --list --bootstrap-server localhost:9092 `
 
 ## LOGS (servicio)
-```docker logs -f [servicio] ```
+` docker logs -f [servicio] `
 
 ## CONSULTA BBDD
 ```docker exec -it postgres psql -U admin -d transacciones_db -c "SELECT * FROM transacciones;"```
@@ -77,5 +80,36 @@ Invoke-RestMethod -Uri "http://localhost:8083/connector-plugins/asturias-flights
  ## CONSUMER
   docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic datos_api_vuelos_asturias --from-beginning
 
+
+
+## ksqlDB CLI (consola)
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+## registrar topic
+CREATE STREAM VUELOS_STREAM WITH (
+  KAFKA_TOPIC='datos_api_vuelos_asturias', 
+  VALUE_FORMAT='AVRO'
+);
+
+
+## verificar conexion
+SHOW STREAMS;
+
+## consulta basica
+### EMIT CHANGES --> queda escuchando para ir actualizando cada evz que se modifique el evento
+SELECT icao24, latitud, longitud, velocidad 
+FROM VUELOS_STREAM 
+WHERE velocidad > 300 
+EMIT CHANGES;
+
+SELECT *
+FROM VUELOS_STREAM
+EMIT CHANGES;
+
+## contador
+SELECT icao24, COUNT(*) AS mensajes_recibidos
+FROM VUELOS_STREAM
+GROUP BY icao24
+EMIT CHANGES;
 
 
