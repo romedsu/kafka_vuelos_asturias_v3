@@ -31,13 +31,13 @@
 
 # ---
 
-FROM confluentinc/cp-kafka-connect:7.5.0
+# FROM confluentinc/cp-kafka-connect:7.5.0
 
-USER root
+# USER root
 
-# Instalar conector HTTP desde Confluent Hub
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http:latest
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest
+# # Instalar conector HTTP desde Confluent Hub
+# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http:latest
+# RUN confluent-hub install --no-prompt confluentinc/kafka-connect-http-source:latest
 
 
 # ---

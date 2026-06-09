@@ -2,7 +2,7 @@
 
 ## Sistema de ingesta de datos a través de un pipeline de procesamiento de datos en streaming en tiempo real, desplegado sobre Docker a través de Apache Kafka y PostgreSQL.
 
-## A través de kafka connect se realiza ingesrta de datos , captar el evento y registrarlo en la BBDD de Postgre.
+## A partir de la API Opensky, se realiza ingesta de datos a traves de producer (python) , capta el evento y envío al broker de kafka para registrarlo en la BBDD de Postgre.
 
 
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
  .\venvPython\Scripts\activate
 
 
-
+## CONECTORES HTTP
  ## LISTAS CONECTORES
 Invoke-RestMethod -Uri "http://localhost:8083/connector-plugins" -Method Get
 
@@ -69,6 +69,8 @@ Invoke-RestMethod -Uri "http://localhost:8083/connector-plugins/asturias-flights
 
  # ESTADO CONECTOR
  Invoke-RestMethod -Uri "http://localhost:8083/connectors-plugins/asturias-flights-source/status" -Method Get | ConvertTo-Json
+
+
 
  ## CONSUMER
   docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic datos_api_vuelos_asturias --from-beginning

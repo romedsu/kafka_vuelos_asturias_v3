@@ -51,45 +51,45 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       - "8081:8081"
 
 
-  kafka-connect:
-    # build: .
-    # image: confluentinc/cp-kafka-connect:7.5.0
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: kafka-connect
-    depends_on:
-      kafka:
-        condition: service_healthy
-      schema-registry:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/connectors"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-    ports:
-      - "8083:8083"
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: 'kafka:9092'
-      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
-      CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: connect-cluster-flights
-      # Tópicos internos que usa Kafka Connect para guardar su propia configuración
-      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      # Conversores de formato para la clave y el valor del mensaje
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
-      # CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"  
-      # CONNECT_PLUGIN_PATH: "/usr/share/java/camel-connectors"  
-      CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components" 
+  # kafka-connect:
+  #   # build: .
+  #   # image: confluentinc/cp-kafka-connect:7.5.0
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: kafka-connect
+  #   depends_on:
+  #     kafka:
+  #       condition: service_healthy
+  #     schema-registry:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8083/connectors"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 60s
+  #   ports:
+  #     - "8083:8083"
+  #   environment:
+  #     CONNECT_BOOTSTRAP_SERVERS: 'kafka:9092'
+  #     CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+  #     CONNECT_REST_PORT: 8083
+  #     CONNECT_GROUP_ID: connect-cluster-flights
+  #     # Tópicos internos que usa Kafka Connect para guardar su propia configuración
+  #     CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+  #     CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+  #     CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+  #     CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+  #     CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+  #     CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+  #     # Conversores de formato para la clave y el valor del mensaje
+  #     CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+  #     CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+  #     CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+  #     # CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"  
+  #     # CONNECT_PLUGIN_PATH: "/usr/share/java/camel-connectors"  
+  #     CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components" 
    
 
 
@@ -123,8 +123,8 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
         condition: service_healthy
       schema-registry:
         condition: service_healthy
-      kafka-connect:
-        condition: service_healthy
+      # kafka-connect:
+      #   condition: service_healthy
       postgres:
         condition: service_healthy
 
