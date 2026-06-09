@@ -113,6 +113,26 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       - ./init-scripts:/docker-entrypoint-initdb.d #link con scripts .sql para creacion de tablas de bbdd
 
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      # kafka-connect:
+        # condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+
+
   producer:
     build:
       context: .
