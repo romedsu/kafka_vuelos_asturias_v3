@@ -1,0 +1,11 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir pandas
+
+COPY _data/pandas/clean_routes_ovd.py .
+COPY _data/pandas/routes.dat .
+
+
+CMD ["python", "clean_routes_ovd.py"]

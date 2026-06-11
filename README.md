@@ -112,4 +112,7 @@ FROM VUELOS_STREAM
 GROUP BY icao24
 EMIT CHANGES;
 
+## PANDAS --> rutas ASTURIAS (OVD) --> /_data/pandas
+#### Filtrado y limpieda de dataset de rutas para obtener solo las de Asturias (rutas desactualizadas)
+
 
