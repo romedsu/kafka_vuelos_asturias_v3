@@ -195,13 +195,21 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       KAFKA_BROKER: "kafka:9092"   
 
 
-  clean-routes-ovd:
+  # clean-routes-ovd:
+  #   build:
+  #     context: .
+  #     dockerfile: ./_data/pandas/Dockerfile.clean
+  #   volumes:
+  #     - ./_data/pandas:/app/output # salida .csv
+
+
+  scraper_aena:
     build:
       context: .
-      dockerfile: ./_data/pandas/Dockerfile.clean
+      dockerfile: _data/scraper/Dockerfile.scraper
+    container_name: scraper_aena
     volumes:
-      - ./_data/pandas:/app/output # salida .csv
-
+      - ./_data/scraper:/app/output
 
 # VOLUMENES
 volumes:

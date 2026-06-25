@@ -20,6 +20,41 @@
 ## CONSULTA BBDD
 ```docker exec -it postgres psql -U admin -d transacciones_db -c "SELECT * FROM transacciones;"```
 
+--- 
+
+# Inicia los contenedores utilizando las imágenes existentes en segundo plano (para cambios en código)
+``docker compose up -d``
+
+# Reconstruye las imágenes antes de iniciar los contenedores (para cambios en Dockerfile)
+``docker compose up -d --build``
+
+# Inicia un servicio que ya fue creado previamente pero está detenido
+``docker compose start [servicio]``
+
+## REINICIAR UNICO SERVICIO (con cambio de codigo)
+``` docker compose up -d --no-deps --build [servicio]```
+
+
+# Muestra los logs en tiempo real de un servicio
+`` docker compose logs -f [servicio] ``
+
+# Reinicia un servicio sin reconstruir
+``docker compose restart [servicio]``
+
+# Lista todos los contenedores
+``docker ps -a``
+
+# Detiene y elimina un contenedor específico de forma forzada
+``docker stop [servicio]``
+``docker rm -f [servicio]``
+
+
+
+# Muestra los logs en tiempo real de un servicio específico tras iniciarlo
+docker compose logs -f [servicio]
+
+
+
 ---
 ## ORDEN SECUENCIA ARRANQUE
 healthcheck --> comprobar que cada servicio ha arrancado correctamente y devuelve respuesta
