@@ -150,4 +150,7 @@ EMIT CHANGES;
 ## PANDAS --> rutas ASTURIAS (OVD) --> /_data/pandas
 #### Filtrado y limpieda de dataset de rutas para obtener solo las de Asturias (rutas desactualizadas)
 
+## WEB SCRAPPING --> rutas AENA ASTURIAS (OVD) --> /_data/scraper
+#### Obtener de la web de Aena, las rutas operativas en el aeropuerto de Asturias
+
 
