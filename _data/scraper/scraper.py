@@ -1,10 +1,25 @@
 import logging
 import requests
+import time
+import json
+import psycopg2
 # from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import pandas as pd
 
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def conectar_db():
+    while True:
+        try:
+            conn = psycopg2.connect("dbname=vuelos_asturias_db user=admin password=password123 host=postgres")
+            logging.info("Conexión exitosa a la base de datos.")
+            return conn
+        except psycopg2.OperationalError:
+            logging.warning("Base de datos no disponible. Reintentando en 5 segundos...")
+            time.sleep(5)
+
 
 # -- OPCION A - con select (solo imprime pantalla)
 # url = "https://www.aena.es/es/asturias/aerolineas-y-destinos/destinos-del-aeropuerto.html"
@@ -34,7 +49,30 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 # -- OPCION B
-def scrape_aena_destinos():
+def guardar_db(data):
+    conn = conectar_db()
+
+    cur = conn.cursor()
+
+    try:
+        for d in data:        
+            cur.execute("INSERT INTO rutasAsturias (destino,pais,aerolinea) VALUES (%s, %s, %s)", 
+                            (d['destino'], d['pais'],d['aerolinea']))
+            conn.commit()
+
+            logging.info(f"¡ÉXITO! Transacción guardada: {d}")
+
+    except Exception as e:
+        conn.rollback()
+        logging.error(f"Error al insertar en la base de datos: {e}")
+    finally:
+        cur.close()
+        conn.close()
+        logging.info("Conexiones a la base de datos cerradas correctamente.")
+    
+     
+
+def scraper_aena_asturias():
     url = "https://www.aena.es/es/asturias/aerolineas-y-destinos/destinos-del-aeropuerto.html"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
@@ -73,7 +111,9 @@ def scrape_aena_destinos():
     # df.to_csv('/app/output/rutas_ovd.csv', index=True, index_label='id')
     df.to_csv('/app/output/rutas_aena_ovd.csv', index=False)
 
-    logging.info(f"Web scraping con exito --> Se han guardado {len(df)} rutas")
+    logging.info(f"Web scraping con exito --> Se han guardado .csv --> {len(df)} rutas")
+
+    guardar_db(data)
 
 if __name__ == "__main__":
-    scrape_aena_destinos()
+    scraper_aena_asturias()

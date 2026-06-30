@@ -141,14 +141,14 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
     image: postgres:15
     container_name: postgres
     healthcheck: # PETICION DE SALUD (si responde correctamente)
-      test: ["CMD-SHELL", "pg_isready -U admin -d transacciones_db"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d vuelos_asturias_db"]
       interval: 5s
       timeout: 5s
       retries: 5
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password123
-      POSTGRES_DB: transacciones_db
+      POSTGRES_DB: vuelos_asturias_db
     ports:
       - "5432:5432"
     volumes:
@@ -179,8 +179,8 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
   producer:
     build:
       context: .
-      dockerfile: ./src/Dockerfile.producer
-    container_name: producer-python
+      dockerfile: ./src/producer_vuelos/Dockerfile.producer
+    container_name: producer-vuelos
     depends_on:
       kafka:
         condition: service_healthy
@@ -190,6 +190,13 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
       #   condition: service_healthy
       postgres:
         condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "get_vuelos.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
     environment:
       KAFKA_BROKER: "kafka:9092"   
@@ -203,13 +210,39 @@ services:   # Aquí empiezan a definirse los componentes (contenedores) del sist
   #     - ./_data/pandas:/app/output # salida .csv
 
 
-  scraper_aena:
+  scraper-aena:
     build:
       context: .
       dockerfile: _data/scraper/Dockerfile.scraper
-    container_name: scraper_aena
+    container_name: scraper-aena
     volumes:
       - ./_data/scraper:/app/output
+
+  dic-rutas:
+    build:
+      context: .
+      dockerfile: src/dic_rutas/Dockerfile.dic_rutas
+
+    container_name: dic-rutas
+
+    depends_on:
+      kafka:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+      producer:
+        condition: service_healthy
+
+    environment:
+      - KAFKA_BROKER=kafka:9092
+
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "dic_rutas.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+      
 
 # VOLUMENES
 volumes:

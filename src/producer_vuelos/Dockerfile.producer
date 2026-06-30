@@ -1,0 +1,11 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY schemas/ /app/schemas/
+COPY src/producer_vuelos /app/src/producer_vuelos
+
+CMD ["python", "src/producer_vuelos/get_vuelos.py"]
